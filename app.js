@@ -33,10 +33,7 @@ if (process.env.NODE_ENV === 'test') {
   app.use('/api/testing', testingRouter)
 }
 
-// static frontend routes
 app.use(express.static('dist'))
-
-// app.use('*', 'dist')
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
