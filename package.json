@@ -2,15 +2,34 @@
   "name": "fso-cicd-blog",
   "version": "1.0.0",
   "description": "",
-  "scripts": {
-    "dev": "pnpm run -r --parallel --aggregate-output dev",
-    "build": "pnpm run -r build",
-    "test": "pnpm run -r --parallel test",
-    "lint": "pnpm run -r --parallel lint",
-    "deploy": "pnpm build && pnpm run -r deploy"
-  },
-  "keywords": [],
-  "author": "Tom Raine",
   "license": "MIT",
-  "packageManager": "pnpm@10.12.2"
+  "author": "Tom Raine",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development node --watch index.js",
+    "lint": "eslint .",
+    "install:client": "npm install --prefix client",
+    "build:client": "npm run build --prefix client",
+    "lint:client": "npm run lint --prefix client",
+    "test:client": "npm run test --prefix client",
+    "test": "NODE_ENV=test node --test",
+    "start:test": "NODE_ENV=test node index.js",
+    "build": "npm install && npm run install:client && npm run build:client"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.14.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.24.0",
+    "eslint": "^9.24.0",
+    "globals": "^16.0.0",
+    "supertest": "^7.1.0"
+  }
 }
