@@ -11,12 +11,12 @@
     "dev": "NODE_ENV=development node --watch index.js",
     "build:local": "npm run install:client && npm run build:client",
     "lint": "eslint .",
+    "test": "NODE_ENV=test node --test",
     "install:client": "npm install --prefix client --include=dev",
     "build:client": "npm run build --prefix client",
     "lint:client": "npm run lint --prefix client",
     "test:client": "npm run test --prefix client",
     "clean:client": "rm -rf client/node_modules",
-    "test": "NODE_ENV=test node --test",
     "start:test": "NODE_ENV=test node index.js",
     "build": "npm install && npm run install:client && npm run build:client && npm run clean:client"
   },
