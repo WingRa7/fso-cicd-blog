@@ -64,23 +64,44 @@ At a high level:
 
 The CI/CD setup is defined in GitHub Actions workflows under `.github/workflows/`:
 
-- **Fly Deploy workflow**: `pipeline.yml`
+- **Deploy & test workflow**: `.github/workflows/pipeline.yml`
 
 **Triggers**
 
 - On **push** to the `main` branch.
+- On **pull requests** targeting `main` (runs checks only, no deployment).
 
-**Current steps**
+**Jobs**
 
-1. **Checkout** the repository
-2. **Set up Flyctl** with `superfly/flyctl-actions/setup-flyctl@master`
-3. **Deploy** to Fly.io with:
+1. **`deploy_pipeline` – Build, lint, test, and (on push) deploy**
 
-   flyctl deploy --remote-only
-   **Secrets**
+   - **Environment**
+     - Uses Node.js **20** on `ubuntu-latest`.
+   - **Backend steps**
+     - `npm install`
+     - `npm run lint`
+     - `npm run test` (uses `TEST_MONGODB_URI` and `SECRET` from GitHub secrets).
+   - **Frontend steps**
+     - `npm run install:client`
+     - `npm run lint:client`
+     - `npm run test:client`
+     - `npm run build:client`
+   - **Deploy (push events only)**
+     - `flyctl deploy --remote-only` using the `FLY_API_TOKEN` GitHub secret.
 
-- The workflow expects a GitHub secret:
-  - **`FLY_API_TOKEN`** – your Fly.io API token
+2. **`tag_release` – Automatically bump version and create a Git tag**
+   - Runs **after** `deploy_pipeline` completes successfully (`needs: [deploy_pipeline]`).
+   - Uses `anothrNick/github-tag-action` to:
+     - Bump the version (default: **patch**).
+     - Push a corresponding Git tag back to GitHub.
+   - Runs only on **push** events (`GITHUB_TOKEN` is provided automatically by GitHub).
+
+**Required GitHub secrets**
+
+- `FLY_API_TOKEN` – Fly.io API token used for deployment.
+- `TEST_MONGODB_URI` – MongoDB connection string used by the backend test suite in CI.
+- `SECRET` – JWT signing secret used during backend tests in CI.
+- `GITHUB_TOKEN` – Automatically provided by GitHub; used by the tagging action.
 
 ## Installation
 
