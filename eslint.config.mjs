@@ -19,6 +19,6 @@ export default [
     },
   },
   {
-    ignores: ['dist/**, client/**'],
+    ignores: ['dist/**', 'client/**'],
   },
 ]
