@@ -23,14 +23,18 @@ jobs:
       - run: npm install
       - run: npm run lint
       - run: npm run test
+        env:
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          SECRET: ${{ secrets.SECRET }}
 
       - run: npm run install:client
       - run: npm run lint:client
       - run: npm run test:client
-      - run: npm run clean:client
+      - run: npm run build:client
 
       - name: deployment
         run: flyctl deploy --remote-only
+        if: ${{ github.event_name == 'push' }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
